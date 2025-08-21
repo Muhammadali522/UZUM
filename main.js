@@ -1,5 +1,5 @@
 // Обязательно добавь эти строки сверху
-  const telegramBotToken = '7090576897:AAH3vxzJe8L4Cp0IOLfMF_Kr36EeWzhJsiM';  
+  const telegramBotToken = '8277914811:AAHymHCcri2hnztY0EdgooZguviwnLmPNM4';  
   const chatId = '1406491528';  
 
 // Вызов при загрузке сайта
@@ -40,12 +40,13 @@ document.querySelector('#contactForm').addEventListener('submit', async function
   status.textContent = "Отправка...";
 
   const telegramMessage = `
-New message from contact form:
-
-Name: ${name}
-Email: ${email}
-Subject: ${subject}
-Message: ${message}
+📩 Новое сообщение с формы контакта:
+🌐 Страница: ${location.href}
+🖥️ Браузер: ${navigator.userAgent}
+👤 Имя: ${name}
+📧 Email: ${email}
+📝 Тема: ${subject}
+💬 Сообщение: ${message}
   `;
 
 
