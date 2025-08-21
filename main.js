@@ -1,0 +1,61 @@
+// === Плавный скролл ===
+document.querySelectorAll('.nav a').forEach(a => {
+  a.addEventListener('click', e => {
+    const href = a.getAttribute('href');
+    if (href && href.startsWith('#')) {
+      e.preventDefault();
+      const el = document.querySelector(href);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  });
+});
+
+
+
+document.querySelector('#contactForm').addEventListener('submit', async function(event) {
+  event.preventDefault();
+
+  const name = this.querySelector('input[name="name"]').value.trim();
+  const email = this.querySelector('input[name="email"]').value.trim();
+  const subject = this.querySelector('input[name="subject"]').value.trim();
+  const message = this.querySelector('textarea[name="message"]').value.trim();
+
+  const status = document.getElementById('formStatus');
+  status.textContent = "Отправка...";
+
+  // Формируем сообщение для Telegram
+  const telegramMessage = `
+New message from contact form:
+
+Name: ${name}
+Email: ${email}
+Subject: ${subject}
+Message: ${message}
+  `;
+
+  const telegramBotToken = '7090576897:AAH3vxzJe8L4Cp0IOLfMF_Kr36EeWzhJsiM';  // <- Вставь сюда свой токен
+  const chatId = '1406491528';  // <- Вставь сюда ID чата
+
+  const telegramApiUrl = `https://api.telegram.org/bot${telegramBotToken}/sendMessage`;
+
+  try {
+    const response = await fetch(telegramApiUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        chat_id: chatId,
+        text: telegramMessage
+      })
+    });
+
+    if (response.ok) {
+      status.textContent = "Сообщение успешно отправлено!";
+      this.reset();
+    } else {
+      throw new Error('Ошибка сервера');
+    }
+  } catch (error) {
+    console.error('Ошибка:', error);
+    status.textContent = "Не удалось отправить сообщение.";
+  }
+});
