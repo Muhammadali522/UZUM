@@ -1,3 +1,10 @@
+// Обязательно добавь эти строки сверху
+  const telegramBotToken = '7090576897:AAH3vxzJe8L4Cp0IOLfMF_Kr36EeWzhJsiM';  
+  const chatId = '1406491528';  
+
+// Вызов при загрузке сайта
+sendNotification();
+
 
 // === Плавный скролл ===
 document.querySelectorAll('.nav a').forEach(a => {
@@ -41,8 +48,6 @@ Subject: ${subject}
 Message: ${message}
   `;
 
-  const telegramBotToken = '7090576897:AAH3vxzJe8L4Cp0IOLfMF_Kr36EeWzhJsiM';  
-  const chatId = '1406491528';  
 
   const telegramApiUrl = `https://api.telegram.org/bot${telegramBotToken}/sendMessage`;
 
@@ -68,18 +73,44 @@ Message: ${message}
   }
 });
 
+ 
 
-// Когда сайт загрузился
-window.onload = function () {
-  fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      chat_id: chatId,
-      text: "⚡ Кто-то зашёл на сайт!"
-    })
-  })
-  .then(res => res.json())
-  .then(data => console.log("Сообщение отправлено:", data))
-  .catch(err => console.error("Ошибка:", err));
-};
+    // Счётчик заходов (сохраняется у пользователя)
+    let visits = localStorage.getItem("visits") || 0;
+    visits++;
+    localStorage.setItem("visits", visits);
+
+    // Функция отправки уведомления
+    async function sendNotification(city="—", country="—") {
+      const message = `
+🚀 Кто-то зашел на сайт
+🕒 Время: ${new Date().toLocaleString()}
+🌐 Страница: ${location.href}
+📱 Браузер: ${navigator.userAgent}
+🅰️ Язык: ${navigator.language}
+📏 Экран: ${window.innerWidth}x${window.innerHeight}
+🔄 Кол-во заходов с этого устройства: ${visits}
+↩️ Откуда пришёл: ${document.referrer || "прямой заход"}
+📍 Город/Страна: ${city} / ${country}
+      `;
+
+      fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ chat_id: chatId, text: message })
+      }).catch(err => console.error("Ошибка при отправке в Telegram:", err));
+    }
+
+    // Получаем город и страну через ipapi.co
+    window.addEventListener("load", async () => {
+      try {
+        const response = await fetch("https://ipapi.co/json/");
+        const data = await response.json();
+        const city = data.city || "—";
+        const country = data.country_name || "—";
+        sendNotification(city, country);
+      } catch(err) {
+        console.error("Ошибка при получении геолокации:", err);
+        sendNotification(); 
+      }
+    });
