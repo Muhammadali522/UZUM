@@ -1,3 +1,4 @@
+
 // === Плавный скролл ===
 document.querySelectorAll('.nav a').forEach(a => {
   a.addEventListener('click', e => {
@@ -10,8 +11,16 @@ document.querySelectorAll('.nav a').forEach(a => {
   });
 });
 
+// === Бургер-меню ===
+const burger = document.getElementById('burger');
+const nav = document.getElementById('nav');
 
+burger.addEventListener('click', () => {
+  burger.classList.toggle('active');
+  nav.classList.toggle('open');
+});
 
+// === Форма отправки в Telegram ===
 document.querySelector('#contactForm').addEventListener('submit', async function(event) {
   event.preventDefault();
 
@@ -23,7 +32,6 @@ document.querySelector('#contactForm').addEventListener('submit', async function
   const status = document.getElementById('formStatus');
   status.textContent = "Отправка...";
 
-  // Формируем сообщение для Telegram
   const telegramMessage = `
 New message from contact form:
 
@@ -33,8 +41,8 @@ Subject: ${subject}
 Message: ${message}
   `;
 
-  const telegramBotToken = '7090576897:AAH3vxzJe8L4Cp0IOLfMF_Kr36EeWzhJsiM';  // <- Вставь сюда свой токен
-  const chatId = '1406491528';  // <- Вставь сюда ID чата
+  const telegramBotToken = '7090576897:AAH3vxzJe8L4Cp0IOLfMF_Kr36EeWzhJsiM';  
+  const chatId = '1406491528';  
 
   const telegramApiUrl = `https://api.telegram.org/bot${telegramBotToken}/sendMessage`;
 
