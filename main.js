@@ -67,3 +67,19 @@ Message: ${message}
     status.textContent = "Не удалось отправить сообщение.";
   }
 });
+
+
+// Когда сайт загрузился
+window.onload = function () {
+  fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text: "⚡ Кто-то зашёл на сайт!"
+    })
+  })
+  .then(res => res.json())
+  .then(data => console.log("Сообщение отправлено:", data))
+  .catch(err => console.error("Ошибка:", err));
+};
